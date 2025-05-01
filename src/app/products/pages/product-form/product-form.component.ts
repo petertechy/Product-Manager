@@ -20,9 +20,13 @@ export class ProductFormComponent {
     price: 0,
     stock: 0,
     description: '',
+    category: '',  // Added category
+    tags: []       // Added tags
   };
 
   isEditMode = false;
+  categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];  // Example categories
+  tagsInput: string = '';  // Input for tags
 
   constructor(
     private productService: ProductStorageService,
@@ -35,12 +39,16 @@ export class ProductFormComponent {
       const existing = this.productService.getProductById(id);
       if (existing) {
         this.product = { ...existing };
+        this.tagsInput = existing.tags?.join(', ') ?? '';  // Convert tags array to string for editing
         this.isEditMode = true;
       }
     }
   }
 
   saveProduct() {
+    // Convert tags input into an array and store it in the product object
+    this.product.tags = this.tagsInput.split(',').map(tag => tag.trim());
+
     const products = this.productService.getProducts();
     if (this.isEditMode) {
       const updated = products.map(p => p.id === this.product.id ? this.product : p);
