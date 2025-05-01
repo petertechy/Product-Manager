@@ -1,30 +1,90 @@
-<h2>Product List</h2>
-<button (click)="addProduct()">Add Product</button>
+<div class="page-container">
+  <h2>Product List</h2>
+  <button (click)="addProduct()">Add Product</button>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>SKU</th>
-      <th>Price</th>
-      <th>Stock</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let p of products">
-      <td>{{ p.name }}</td>
-      <td>{{ p.sku }}</td>
-      <td>{{ p.price | currency }}</td>
-      <td [ngClass]="{ 'low-stock': isLowStock(p.stock) }">
-        {{ p.stock }}
-        <span *ngIf="isLowStock(p.stock)" class="alert-text">⚠️ Low Stock</span>
-      </td>
-      <td>
-        <button (click)="viewDetails(p.id)">View</button>
-        <button (click)="editProduct(p.id)">Edit</button>
-        <button (click)="deleteProduct(p.id)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <!-- Search and Filter Section -->
+  <div class="filter-section">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+      placeholder="Search by name or SKU"
+      class="search-input"
+    />
+
+    <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
+
+    <div class="price-range">
+      <input
+        type="number"
+        [(ngModel)]="minPrice"
+        (input)="onPriceChange()"
+        placeholder="Min Price"
+        class="price-input"
+      />
+      -
+      <input
+        type="number"
+        [(ngModel)]="maxPrice"
+        (input)="onPriceChange()"
+        placeholder="Max Price"
+        class="price-input"
+      />
+    </div>
+
+    <div class="tags-filter">
+      <label *ngFor="let tag of ['New', 'On Sale', 'Popular']">
+        <input
+          type="checkbox"
+          [(ngModel)]="selectedTags"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="onTagsChange()"
+          [value]="tag"
+        />
+        {{ tag }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Product Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>SKU</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Category</th>
+        <th>Tags</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of filteredProducts">
+        <td>{{ p.name }}</td>
+        <td>{{ p.sku }}</td>
+        <td>{{ p.price | currency }}</td>
+        <td [ngClass]="{ 'low-stock': isLowStock(p.stock) }">
+          {{ p.stock }}
+          <span *ngIf="isLowStock(p.stock)" class="alert-text"
+            >⚠️ Low Stock</span
+          >
+        </td>
+        <td>{{ p.category }}</td>
+        <td>
+          <span *ngFor="let tag of p.tags" class="tag">{{ tag }}</span>
+        </td>
+        <td>
+          <button (click)="viewDetails(p.id)">View</button>
+          <button (click)="editProduct(p.id)">Edit</button>
+          <button (click)="deleteProduct(p.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
