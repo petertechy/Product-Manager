@@ -25,4 +25,18 @@ export class ProductListComponent {
   addProduct() {
     this.router.navigate(['/add']);
   }
+
+  editProduct(id: number) {
+    this.router.navigate(['/edit', id]);
+  }
+  
+  deleteProduct(id: number) {
+    const confirmed = confirm('Are you sure you want to delete this product?');
+    if (confirmed) {
+      const updated = this.products.filter(p => p.id !== id);
+      this.productService.saveProducts(updated);
+      this.products = updated;
+    }
+  }
+  
 }
