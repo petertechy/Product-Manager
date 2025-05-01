@@ -10,4 +10,14 @@ table {
   button {
     margin-right: 6px;
   }
+  .low-stock {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .alert-text {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    color: orangered;
+  }
   
