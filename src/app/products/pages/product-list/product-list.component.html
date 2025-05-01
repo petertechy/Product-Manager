@@ -1,9 +1,14 @@
 <h2>Product List</h2>
 <button (click)="addProduct()">Add Product</button>
+
 <table>
   <thead>
     <tr>
-      <th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Action</th>
+      <th>Name</th>
+      <th>SKU</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
@@ -11,13 +16,15 @@
       <td>{{ p.name }}</td>
       <td>{{ p.sku }}</td>
       <td>{{ p.price | currency }}</td>
-      <td>{{ p.stock }}</td>
+      <td [ngClass]="{ 'low-stock': isLowStock(p.stock) }">
+        {{ p.stock }}
+        <span *ngIf="isLowStock(p.stock)" class="alert-text">⚠️ Low Stock</span>
+      </td>
       <td>
         <button (click)="viewDetails(p.id)">View</button>
         <button (click)="editProduct(p.id)">Edit</button>
         <button (click)="deleteProduct(p.id)">Delete</button>
       </td>
-      
     </tr>
   </tbody>
 </table>
