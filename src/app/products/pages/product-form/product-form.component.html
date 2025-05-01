@@ -1,4 +1,4 @@
-<h2>Add Product</h2>
+<h2>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h2>
 <form (ngSubmit)="saveProduct()" #form="ngForm">
   <label>Name:
     <input type="text" [(ngModel)]="product.name" name="name" required />
