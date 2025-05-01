@@ -1,8 +1,15 @@
-<h2>Product Details</h2>
-<div *ngIf="product">
-  <p><strong>Name:</strong> {{ product.name }}</p>
-  <p><strong>SKU:</strong> {{ product.sku }}</p>
-  <p><strong>Price:</strong> {{ product.price | currency }}</p>
-  <p><strong>Stock:</strong> {{ product.stock }}</p>
-  <p><strong>Description:</strong> {{ product.description }}</p>
+<div class="page-container">
+  <h2>Product Details</h2>
+  <div *ngIf="product">
+    <p><strong>Name:</strong> {{ product.name }}</p>
+    <p><strong>SKU:</strong> {{ product.sku }}</p>
+    <p><strong>Price:</strong> {{ product.price | currency }}</p>
+    <p><strong>Stock:</strong> {{ product.stock }}</p>
+    <p><strong>Description:</strong> {{ product.description }}</p>
+    <p><strong>Category:</strong> {{ product.category }}</p>
+    <p>
+      <strong>Tags:</strong>
+      <span *ngFor="let tag of product.tags" class="tag">{{ tag }}</span>
+    </p>
+  </div>
 </div>
