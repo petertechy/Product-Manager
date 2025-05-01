@@ -38,5 +38,10 @@ export class ProductListComponent {
       this.products = updated;
     }
   }
+
+  isLowStock(stock: number): boolean {
+    return stock < 5; // Threshold for low stock
+  }
+  
   
 }
