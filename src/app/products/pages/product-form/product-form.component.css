@@ -1,0 +1,12 @@
+form {
+    max-width: 400px;
+  }
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 6px;
+  }
+  
