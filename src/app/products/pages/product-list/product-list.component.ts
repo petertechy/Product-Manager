@@ -15,14 +15,14 @@ import { FormsModule } from '@angular/forms';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
-  
-  searchTerm: string = '';      // For searching by name/SKU
-  selectedCategory: string = '';  // For filtering by category
-  minPrice: number = 0;        // For price filter
-  maxPrice: number = 1000;     // For price filter
-  selectedTags: string[] = []; // For filtering by tags
 
-  categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture']; // Example categories
+  searchTerm: string = '';
+  selectedCategory: string = '';
+  minPrice: number = 0;
+  maxPrice: number = 1000;
+  selectedTags: string[] = [];
+
+  categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];
 
   constructor(private productService: ProductStorageService, private router: Router) {}
 
@@ -31,10 +31,8 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts() {
-    const allProducts = this.productService.getProducts();
-
-    // Apply search and filter logic
-    this.filteredProducts = allProducts.filter(product => 
+    this.products = this.productService.getProducts(); // ✅ Always update main product list
+    this.filteredProducts = this.products.filter(product =>
       this.filterBySearchTerm(product) &&
       this.filterByCategory(product) &&
       this.filterByPriceRange(product) &&
@@ -60,7 +58,19 @@ export class ProductListComponent implements OnInit {
     return this.selectedTags.every(tag => product.tags?.includes(tag));
   }
 
-  // Update filters
+  onTagToggle(tag: string, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      if (!this.selectedTags.includes(tag)) {
+        this.selectedTags.push(tag);
+      }
+    } else {
+      this.selectedTags = this.selectedTags.filter(t => t !== tag);
+    }
+    this.loadProducts(); // Re-apply filters
+  }
+  
+
   onSearchChange() {
     this.loadProducts();
   }
@@ -94,11 +104,20 @@ export class ProductListComponent implements OnInit {
     if (confirmed) {
       const updated = this.products.filter(p => p.id !== id);
       this.productService.saveProducts(updated);
-      this.products = updated;
+      this.loadProducts(); // ✅ Reload products and apply filters
     }
   }
 
-  isLowStock(stock: number): boolean {
-    return stock < 5; // Threshold for low stock
+  getStockBadgeClass(stock: number): string {
+    if (stock === 0) return 'badge badge-red';
+    if (stock < 5) return 'badge badge-yellow';
+    return 'badge badge-green';
   }
+  
+  getStockText(stock: number): string {
+    if (stock === 0) return 'Out of Stock';
+    if (stock < 5) return 'Low Stock';
+    return 'In Stock';
+  }
+  
 }
