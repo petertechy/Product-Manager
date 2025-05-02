@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductStorageService } from 'src/app/core/services/product-storage.service';
 import { Product } from 'src/app/core/models/product.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-product-detail',
@@ -14,8 +15,16 @@ import { Product } from 'src/app/core/models/product.model';
 export class ProductDetailComponent {
   product?: Product;
 
-  constructor(route: ActivatedRoute, private productService: ProductStorageService) {
+  constructor(
+    route: ActivatedRoute,
+    private productService: ProductStorageService,
+    private location: Location // ✅ Inject Location
+  ) {
     const id = Number(route.snapshot.paramMap.get('id'));
     this.product = this.productService.getProductById(id);
+  }
+
+  goBack() {
+    this.location.back(); // ✅ Go to previous page
   }
 }
