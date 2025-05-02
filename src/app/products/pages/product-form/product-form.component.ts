@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductStorageService } from 'src/app/core/services/product-storage.service';
 import { Product } from 'src/app/core/models/product.model';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 
 @Component({
   selector: 'app-product-form',
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css']
 })
-export class ProductFormComponent {
+export class ProductFormComponent implements OnInit {
   product: Product = {
     id: Date.now(),
     name: '',
@@ -20,42 +20,70 @@ export class ProductFormComponent {
     price: 0,
     stock: 0,
     description: '',
-    category: '',  // Added category
-    tags: []       // Added tags
+    category: '',
+    tags: []
   };
 
   isEditMode = false;
-  categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];  // Example categories
-  tagsInput: string = '';  // Input for tags
+  categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];
+  availableTags: string[] = ['New', 'On Sale', 'Popular'];
 
   constructor(
     private productService: ProductStorageService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {
+    private route: ActivatedRoute,
+    private location: Location
+  ) {}
+
+  ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
       const existing = this.productService.getProductById(id);
       if (existing) {
         this.product = { ...existing };
-        this.tagsInput = existing.tags?.join(', ') ?? '';  // Convert tags array to string for editing
         this.isEditMode = true;
+      } else {
+        console.warn('Product not found with ID:', id);
       }
     }
   }
 
-  saveProduct() {
-    // Convert tags input into an array and store it in the product object
-    this.product.tags = this.tagsInput.split(',').map(tag => tag.trim());
+  onTagToggle(tag: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (!this.product.tags) this.product.tags = [];
+
+    if (checked) {
+      if (!this.product.tags.includes(tag)) {
+        this.product.tags.push(tag);
+      }
+    } else {
+      this.product.tags = this.product.tags.filter(t => t !== tag);
+    }
+  }
+
+  saveProduct(): void {
+    const { name, sku, price, stock,  } = this.product;
+    const category = this.product.category || '';
+
+    if (!name.trim() || !sku.trim() || price <= 0 || stock < 0 || !category.trim()) {
+      alert('Please fill in all required fields correctly.');
+      return;
+    }
 
     const products = this.productService.getProducts();
+
     if (this.isEditMode) {
       const updated = products.map(p => p.id === this.product.id ? this.product : p);
       this.productService.saveProducts(updated);
     } else {
       this.productService.addProduct(this.product);
     }
+
     this.router.navigate(['/']);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
