@@ -1,15 +1,38 @@
 <div class="page-container">
-  <h2>Product Details</h2>
-  <div *ngIf="product">
-    <p><strong>Name:</strong> {{ product.name }}</p>
-    <p><strong>SKU:</strong> {{ product.sku }}</p>
-    <p><strong>Price:</strong> {{ product.price | currency }}</p>
-    <p><strong>Stock:</strong> {{ product.stock }}</p>
-    <p><strong>Description:</strong> {{ product.description }}</p>
-    <p><strong>Category:</strong> {{ product.category }}</p>
-    <p>
-      <strong>Tags:</strong>
-      <span *ngFor="let tag of product.tags" class="tag">{{ tag }}</span>
-    </p>
+    <button (click)="goBack()" class="back-button">← Back</button>
+    <h2 class="page-title">Product Details</h2>
+  
+    <div class="product-card" *ngIf="product">
+      <div class="product-row">
+        <label>Name:</label>
+        <span>{{ product.name }}</span>
+      </div>
+      <div class="product-row">
+        <label>SKU:</label>
+        <span>{{ product.sku }}</span>
+      </div>
+      <div class="product-row">
+        <label>Price:</label>
+        <span>{{ product.price | currency }}</span>
+      </div>
+      <div class="product-row">
+        <label>Stock:</label>
+        <span>{{ product.stock }}</span>
+      </div>
+      <div class="product-row">
+        <label>Description:</label>
+        <span>{{ product.description }}</span>
+      </div>
+      <div class="product-row">
+        <label>Category:</label>
+        <span>{{ product.category }}</span>
+      </div>
+      <div class="product-row">
+        <label>Tags:</label>
+        <span class="tag-container">
+          <span *ngFor="let tag of product.tags" class="tag">{{ tag }}</span>
+        </span>
+      </div>
+    </div>
   </div>
-</div>
+  
