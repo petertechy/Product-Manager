@@ -1,4 +1,45 @@
-p {
-    line-height: 1.6;
+.page-title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .product-card {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .product-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  
+  .product-row label {
+    width: 150px;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .product-row span {
+    flex: 1;
+    color: #333;
+  }
+  
+  .tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .tag {
+    background-color: #e0f0ff;
+    color: #007bff;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 20px;
   }
   
