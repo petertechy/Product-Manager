@@ -1,64 +1,58 @@
-<div class="page-container">
-  <h2>{{ isEditMode ? "Edit Product" : "Add Product" }}</h2>
-  <form (ngSubmit)="saveProduct()" #productForm="ngForm">
-    <label
-      >Name:
-      <input
-        type="text"
-        [(ngModel)]="product.name"
-        name="name"
-        required
-      /> </label
-    ><br /><br />
-    <label
-      >SKU:
-      <input
-        type="text"
-        [(ngModel)]="product.sku"
-        name="sku"
-        required
-      /> </label
-    ><br /><br />
-    <label
-      >Price:
-      <input
-        type="number"
-        [(ngModel)]="product.price"
-        name="price"
-        required
-      /> </label
-    ><br /><br />
-    <label
-      >Stock:
-      <input
-        type="number"
-        [(ngModel)]="product.stock"
-        name="stock"
-        required
-      /> </label
-    ><br /><br />
-    <label
-      >Description:<br />
-      <textarea
-        [(ngModel)]="product.description"
-        name="description"
-      ></textarea></label
-    ><br /><br />
-
-    <label>Category:</label>
-    <select [(ngModel)]="product.category" name="category" required>
-      <option value="" disabled>Select category</option>
-      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-    </select>
-
-    <label>Tags (comma-separated):</label>
-    <input
-      type="text"
-      [(ngModel)]="tagsInput"
-      name="tags"
-      placeholder="e.g. New, On Sale"
-    />
-
-    <button type="submit">{{ isEditMode ? "Update" : "Save" }}</button>
-  </form>
-</div>
+<div class="product-form-container" *ngIf="product">
+    <button (click)="goBack()" class="back-button">← Back</button>
+  
+    <h1 class="form-title">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h1>
+    <h3 class="form-subtitle">Fill in the product details below</h3>
+  
+    <form (ngSubmit)="saveProduct()" #productForm="ngForm" class="product-form">
+      <div class="form-grid">
+        <!-- Left Column -->
+        <div class="form-section">
+          <label>Name:</label>
+          <input type="text" [(ngModel)]="product.name" name="name" required />
+  
+          <label>SKU:</label>
+          <input type="text" [(ngModel)]="product.sku" name="sku" required />
+  
+          <label>Price:</label>
+          <input type="number" [(ngModel)]="product.price" name="price" required />
+  
+          <label>Stock:</label>
+          <input type="number" [(ngModel)]="product.stock" name="stock" required />
+  
+          <label>Category:</label>
+          <select [(ngModel)]="product.category" name="category" required>
+            <option value="" disabled>Select category</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+  
+          <label>Tags:</label>
+          <div class="tag-options">
+            <label *ngFor="let tag of ['New', 'On Sale', 'Popular']">
+              <input
+                type="checkbox"
+                [checked]="product.tags.includes(tag)"
+                (change)="onTagToggle(tag, $event)"
+              />
+              {{ tag }}
+            </label>
+          </div>
+        </div>
+  
+        <!-- Right Column -->
+        <div class="form-section">
+          <label>Description:</label>
+          <textarea
+            rows="12"
+            [(ngModel)]="product.description"
+            name="description"
+          ></textarea>
+        </div>
+      </div>
+  
+      <button type="submit" class="submit-btn">
+        {{ isEditMode ? 'Update Product' : 'Save Product' }}
+      </button>
+    </form>
+  </div>
+  
