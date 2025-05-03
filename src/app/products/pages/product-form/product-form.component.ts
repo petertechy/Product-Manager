@@ -4,6 +4,7 @@ import { ProductStorageService } from 'src/app/core/services/product-storage.ser
 import { Product } from 'src/app/core/models/product.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-form',
@@ -32,7 +33,8 @@ export class ProductFormComponent implements OnInit {
     private productService: ProductStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +69,7 @@ export class ProductFormComponent implements OnInit {
     const category = this.product.category || '';
 
     if (!name.trim() || !sku.trim() || price <= 0 || stock < 0 || !category.trim()) {
-      alert('Please fill in all required fields correctly.');
+      this.toastr.error('Please fill in all required fields correctly.', 'Form Error');
       return;
     }
 
@@ -76,8 +78,10 @@ export class ProductFormComponent implements OnInit {
     if (this.isEditMode) {
       const updated = products.map(p => p.id === this.product.id ? this.product : p);
       this.productService.saveProducts(updated);
+      this.toastr.success('Product updated successfully');
     } else {
       this.productService.addProduct(this.product);
+      this.toastr.success('Product added successfully');
     }
 
     this.router.navigate(['/']);
