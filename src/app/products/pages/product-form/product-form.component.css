@@ -112,4 +112,15 @@
   .tag-item:hover {
     background-color: #e0e0e0;
   }
+  .error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+  
+  input.ng-invalid.ng-touched,
+  select.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched {
+    border-color: red;
+  }
   
