@@ -5,27 +5,84 @@
     <h3 class="form-subtitle">Fill in the product details below</h3>
   
     <form (ngSubmit)="saveProduct()" #productForm="ngForm" class="product-form">
+  
       <div class="form-grid">
         <!-- Left Column -->
         <div class="form-section">
+          <!-- Name -->
           <label>Name:</label>
-          <input type="text" [(ngModel)]="product.name" name="name" required />
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="product.name"
+            required
+            minlength="3"
+            #name="ngModel"
+          />
+          <div class="error" *ngIf="name.invalid && name.touched">
+            <small *ngIf="name.errors?.['required']">Name is required.</small>
+            <small *ngIf="name.errors?.['minlength']">Min 3 characters.</small>
+          </div>
   
+          <!-- SKU -->
           <label>SKU:</label>
-          <input type="text" [(ngModel)]="product.sku" name="sku" required />
+          <input
+            type="text"
+            name="sku"
+            [(ngModel)]="product.sku"
+            required
+            #sku="ngModel"
+          />
+          <div class="error" *ngIf="sku.invalid && sku.touched">
+            <small>SKU is required.</small>
+          </div>
   
+          <!-- Price -->
           <label>Price:</label>
-          <input type="number" [(ngModel)]="product.price" name="price" required />
+          <input
+            type="number"
+            name="price"
+            [(ngModel)]="product.price"
+            required
+            min="1"
+            #price="ngModel"
+          />
+          <div class="error" *ngIf="price.invalid && price.touched">
+            <small *ngIf="price.errors?.['required']">Price is required.</small>
+            <small *ngIf="price.errors?.['min']">Must be greater than 0.</small>
+          </div>
   
+          <!-- Stock -->
           <label>Stock:</label>
-          <input type="number" [(ngModel)]="product.stock" name="stock" required />
+          <input
+            type="number"
+            name="stock"
+            [(ngModel)]="product.stock"
+            required
+            min="0"
+            #stock="ngModel"
+          />
+          <div class="error" *ngIf="stock.invalid && stock.touched">
+            <small *ngIf="stock.errors?.['required']">Stock is required.</small>
+            <small *ngIf="stock.errors?.['min']">Cannot be negative.</small>
+          </div>
   
+          <!-- Category -->
           <label>Category:</label>
-          <select [(ngModel)]="product.category" name="category" required>
+          <select
+            name="category"
+            [(ngModel)]="product.category"
+            required
+            #category="ngModel"
+          >
             <option value="" disabled>Select category</option>
             <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
           </select>
+          <div class="error" *ngIf="category.invalid && category.touched">
+            <small>Category is required.</small>
+          </div>
   
+          <!-- Tags -->
           <label>Tags:</label>
           <div class="tag-options">
             <label *ngFor="let tag of ['New', 'On Sale', 'Popular']">
@@ -50,7 +107,12 @@
         </div>
       </div>
   
-      <button type="submit" class="submit-btn">
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="productForm.invalid"
+      >
         {{ isEditMode ? 'Update Product' : 'Save Product' }}
       </button>
     </form>
