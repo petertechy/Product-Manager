@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductStorageService } from 'src/app/core/services/product-storage.service';
 import { Product } from 'src/app/core/models/product.model';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 
@@ -46,7 +46,8 @@ export class ProductFormComponent implements OnInit {
         this.product = { ...existing };
         this.isEditMode = true;
       } else {
-        console.warn('Product not found with ID:', id);
+        this.toastr.warning('Product not found.', 'Warning');
+        this.router.navigate(['/']);
       }
     }
   }
@@ -64,12 +65,9 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-  saveProduct(): void {
-    const { name, sku, price, stock,  } = this.product;
-    const category = this.product.category || '';
-
-    if (!name.trim() || !sku.trim() || price <= 0 || stock < 0 || !category.trim()) {
-      this.toastr.error('Please fill in all required fields correctly.', 'Form Error');
+  saveProduct(form: NgForm): void {
+    if (form.invalid) {
+      this.toastr.error('Please correct errors before submitting.', 'Form Error');
       return;
     }
 
