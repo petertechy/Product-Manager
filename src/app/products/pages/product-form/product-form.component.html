@@ -4,8 +4,7 @@
     <h1 class="form-title">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h1>
     <h3 class="form-subtitle">Fill in the product details below</h3>
   
-    <form (ngSubmit)="saveProduct()" #productForm="ngForm" class="product-form">
-  
+    <form (ngSubmit)="saveProduct(productForm)" #productForm="ngForm" class="product-form" novalidate>
       <div class="form-grid">
         <!-- Left Column -->
         <div class="form-section">
@@ -85,7 +84,7 @@
           <!-- Tags -->
           <label>Tags:</label>
           <div class="tag-options">
-            <label *ngFor="let tag of ['New', 'On Sale', 'Popular']">
+            <label *ngFor="let tag of availableTags">
               <input
                 type="checkbox"
                 [checked]="product.tags.includes(tag)"
