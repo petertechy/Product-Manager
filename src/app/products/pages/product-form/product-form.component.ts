@@ -49,8 +49,21 @@ export class ProductFormComponent implements OnInit {
         this.toastr.warning('Product not found.', 'Warning');
         this.router.navigate(['/']);
       }
+    } else {
+      // Ensure product is initialized for Add Product
+      this.product = {
+        id: Date.now(),
+        name: '',
+        sku: '',
+        price: 0,
+        stock: 0,
+        description: '',
+        category: '',
+        tags: []
+      };
     }
   }
+  
 
   onTagToggle(tag: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
