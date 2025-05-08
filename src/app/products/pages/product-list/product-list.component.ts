@@ -4,17 +4,19 @@ import { Product } from 'src/app/core/models/product.model';
 import { ProductStorageService } from 'src/app/core/services/product-storage.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from 'src/app/shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PaginationComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  pagedProducts: Product[] = [];
 
   searchTerm: string = '';
   selectedCategory: string = '';
@@ -24,6 +26,11 @@ export class ProductListComponent implements OnInit {
 
   categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];
 
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalPages: number = 1;
+
   constructor(private productService: ProductStorageService, private router: Router) {}
 
   ngOnInit() {
@@ -31,13 +38,32 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts() {
-    this.products = this.productService.getProducts(); // ✅ Always update main product list
+    this.products = this.productService.getProducts();
+    this.applyFilters();
+  }
+
+  applyFilters() {
     this.filteredProducts = this.products.filter(product =>
       this.filterBySearchTerm(product) &&
       this.filterByCategory(product) &&
       this.filterByPriceRange(product) &&
       this.filterByTags(product)
     );
+
+    this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
+    this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
+    this.updatePagedProducts();
+  }
+
+  updatePagedProducts() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.pagedProducts = this.filteredProducts.slice(start, end);
+  }
+
+  handlePageChange(page: number) {
+    this.currentPage = page;
+    this.updatePagedProducts();
   }
 
   filterBySearchTerm(product: Product): boolean {
@@ -67,24 +93,23 @@ export class ProductListComponent implements OnInit {
     } else {
       this.selectedTags = this.selectedTags.filter(t => t !== tag);
     }
-    this.loadProducts(); // Re-apply filters
+    this.applyFilters();
   }
-  
 
   onSearchChange() {
-    this.loadProducts();
+    this.applyFilters();
   }
 
   onCategoryChange() {
-    this.loadProducts();
+    this.applyFilters();
   }
 
   onPriceChange() {
-    this.loadProducts();
+    this.applyFilters();
   }
 
   onTagsChange() {
-    this.loadProducts();
+    this.applyFilters();
   }
 
   viewDetails(id: number) {
@@ -104,7 +129,7 @@ export class ProductListComponent implements OnInit {
     if (confirmed) {
       const updated = this.products.filter(p => p.id !== id);
       this.productService.saveProducts(updated);
-      this.loadProducts(); // ✅ Reload products and apply filters
+      this.loadProducts();
     }
   }
 
@@ -113,11 +138,10 @@ export class ProductListComponent implements OnInit {
     if (stock < 5) return 'badge badge-yellow';
     return 'badge badge-green';
   }
-  
+
   getStockText(stock: number): string {
     if (stock === 0) return 'Out of Stock';
     if (stock < 5) return 'Low Stock';
     return 'In Stock';
   }
-  
 }
