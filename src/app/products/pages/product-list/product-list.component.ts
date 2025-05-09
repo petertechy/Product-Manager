@@ -17,6 +17,7 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
   pagedProducts: Product[] = [];
+  selectedProductIds: number[] = [];
 
   searchTerm: string = '';
   selectedCategory: string = '';
@@ -144,4 +145,41 @@ export class ProductListComponent implements OnInit {
     if (stock < 5) return 'Low Stock';
     return 'In Stock';
   }
+
+  toggleProductSelection(id: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedProductIds.push(id);
+    } else {
+      this.selectedProductIds = this.selectedProductIds.filter(pid => pid !== id);
+    }
+  }
+  
+  isSelected(id: number): boolean {
+    return this.selectedProductIds.includes(id);
+  }
+  
+  deleteSelectedProducts() {
+    const confirmed = confirm('Are you sure you want to delete selected products?');
+    if (confirmed) {
+      this.products = this.products.filter(p => !this.selectedProductIds.includes(p.id));
+      this.productService.saveProducts(this.products);
+      this.selectedProductIds = [];
+      this.loadProducts();
+    }
+  }
+
+  areAllSelected(): boolean {
+    return this.filteredProducts.length > 0 && this.selectedProductIds.length === this.filteredProducts.length;
+  }
+  
+  toggleSelectAll(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedProductIds = this.filteredProducts.map(p => p.id);
+    } else {
+      this.selectedProductIds = [];
+    }
+  }
+  
 }
