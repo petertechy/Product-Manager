@@ -4,6 +4,12 @@
         <p class="subheading">View, filter, and manage your product inventory efficiently.</p>
       </div>
   <button (click)="addProduct()">Add Product</button>
+  <button 
+  class="bulk-delete-btn" 
+  (click)="deleteSelectedProducts()" 
+  [disabled]="selectedProductIds.length === 0">
+  Delete Selected ({{ selectedProductIds.length }})
+</button>
 
   <div class="filter-section">
     <div class="filter-group">
@@ -71,41 +77,55 @@
   </div>
   
 
-  <!-- Product Table -->
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>SKU</th>
-        <th>Price</th>
-        <th>Stock</th>
-        <th>Category</th>
-        <th>Tags</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of filteredProducts">
-        <td data-label="Name">{{ p.name }}</td>
-        <td data-label="SKU">{{ p.sku }}</td>
-        <td data-label="Price">{{ p.price | currency }}</td>
-        <td data-label="Stock">
-            <span [ngClass]="getStockBadgeClass(p.stock)">
-              {{ getStockText(p.stock) }}
-            </span>
-          </td>          
-        <td data-label="Category">{{ p.category }}</td>
-        <td data-label="Tags">
-          <span *ngFor="let tag of p.tags" class="tag">{{ tag }}</span>
-        </td>
-        <td data-label="Action">
-            <button class="btn view-btn" (click)="viewDetails(p.id)">View</button>
-            <button class="btn edit-btn" (click)="editProduct(p.id)">Edit</button>
-            <button class="btn delete-btn" (click)="deleteProduct(p.id)">Delete</button>
-          </td>          
-      </tr>
-    </tbody>
-  </table>
+ <!-- Product Table -->
+<table>
+  <thead>
+    <tr>
+      <th>
+        <input 
+          type="checkbox" 
+          [checked]="areAllSelected()" 
+          (change)="toggleSelectAll($event)" 
+        />
+      </th>
+      <th>Name</th>
+      <th>SKU</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Category</th>
+      <th>Tags</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of filteredProducts">
+      <td>
+        <input 
+          type="checkbox" 
+          [checked]="isSelected(p.id)" 
+          (change)="toggleProductSelection(p.id, $event)" 
+        />
+      </td>
+      <td data-label="Name">{{ p.name }}</td>
+      <td data-label="SKU">{{ p.sku }}</td>
+      <td data-label="Price">{{ p.price | currency }}</td>
+      <td data-label="Stock">
+        <span [ngClass]="getStockBadgeClass(p.stock)">
+          {{ getStockText(p.stock) }}
+        </span>
+      </td>
+      <td data-label="Category">{{ p.category }}</td>
+      <td data-label="Tags">
+        <span *ngFor="let tag of p.tags" class="tag">{{ tag }}</span>
+      </td>
+      <td data-label="Action">
+        <button class="btn view-btn" (click)="viewDetails(p.id)">View</button>
+        <button class="btn edit-btn" (click)="editProduct(p.id)">Edit</button>
+        <button class="btn delete-btn" (click)="deleteProduct(p.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
   <app-pagination
   [currentPage]="currentPage"
