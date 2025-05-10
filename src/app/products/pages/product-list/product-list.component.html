@@ -98,7 +98,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let p of filteredProducts">
+    <tr *ngFor="let p of pagedProducts">
       <td>
         <input 
           type="checkbox" 
@@ -127,10 +127,12 @@
   </tbody>
 </table>
 
-  <app-pagination
+<app-pagination
   [currentPage]="currentPage"
-  [totalPages]="totalPages"
+  [itemsPerPage]="itemsPerPage"
+  [totalItems]="filteredProducts.length"
   (pageChanged)="handlePageChange($event)">
 </app-pagination>
+
 
 </div>
