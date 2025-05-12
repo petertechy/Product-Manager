@@ -25,6 +25,10 @@ export class ProductListComponent implements OnInit {
   maxPrice: number = 1000;
   selectedTags: string[] = [];
 
+  sortKey: string = '';
+sortDirection: 'asc' | 'desc' = 'asc';
+
+
   categories: string[] = ['Electronics', 'Clothing', 'Books', 'Furniture'];
 
   // Pagination
@@ -180,6 +184,53 @@ export class ProductListComponent implements OnInit {
     } else {
       this.selectedProductIds = [];
     }
+  }
+
+  applyFilters() {
+    this.filteredProducts = this.products.filter(product =>
+      this.filterBySearchTerm(product) &&
+      this.filterByCategory(product) &&
+      this.filterByPriceRange(product) &&
+      this.filterByTags(product)
+    );
+  
+    this.sortFilteredProducts(); // ✅ Sort before pagination
+  
+    this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
+    this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
+    this.updatePagedProducts();
+  }
+  
+  sortFilteredProducts() {
+    if (!this.sortKey) return;
+  
+    this.filteredProducts.sort((a: any, b: any) => {
+      const valueA = a[this.sortKey];
+      const valueB = b[this.sortKey];
+  
+      if (typeof valueA === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+  
+      return this.sortDirection === 'asc'
+        ? valueA - valueB
+        : valueB - valueA;
+    });
+  }
+  
+ 
+  onSort(key: string) {
+    if (this.sortKey === key) {
+      // Toggle direction
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortKey = key;
+      this.sortDirection = 'asc';
+    }
+  
+    this.applyFilters();
   }
   
 }

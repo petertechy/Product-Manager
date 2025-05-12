@@ -78,21 +78,14 @@
   
 
  <!-- Product Table -->
-<table>
+ <table>
   <thead>
     <tr>
-      <th>
-        <input 
-          type="checkbox" 
-          [checked]="areAllSelected()" 
-          (change)="toggleSelectAll($event)" 
-        />
-      </th>
-      <th>Name</th>
-      <th>SKU</th>
-      <th>Price</th>
-      <th>Stock</th>
-      <th>Category</th>
+      <th (click)="onSort('name')">Name</th>
+      <th (click)="onSort('sku')">SKU</th>
+      <th (click)="onSort('price')">Price</th>
+      <th (click)="onSort('stock')">Stock</th>
+      <th (click)="onSort('category')">Category</th>
       <th>Tags</th>
       <th>Action</th>
     </tr>
