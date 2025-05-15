@@ -47,18 +47,6 @@ sortDirection: 'asc' | 'desc' = 'asc';
     this.applyFilters();
   }
 
-  applyFilters() {
-    this.filteredProducts = this.products.filter(product =>
-      this.filterBySearchTerm(product) &&
-      this.filterByCategory(product) &&
-      this.filterByPriceRange(product) &&
-      this.filterByTags(product)
-    );
-
-    this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
-    this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
-    this.updatePagedProducts();
-  }
 
   updatePagedProducts() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
